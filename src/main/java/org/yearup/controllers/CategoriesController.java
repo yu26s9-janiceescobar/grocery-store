@@ -1,6 +1,7 @@
 package org.yearup.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Category;
@@ -35,11 +36,11 @@ public class CategoriesController
         return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
-    // add the appropriate annotation for a get action
-    public Category getById(@PathVariable int id)
+    @GetMapping("/{id}")
+    public ResponseEntity<Category> getById(@PathVariable int id)
     {
-        // get the category by id
-        return null;
+        Category found = categoryService.getById(id);
+        return ResponseEntity.status(HttpStatus.FOUND).body(found);
     }
 
     // the url to return all products in category 1 would look like this
