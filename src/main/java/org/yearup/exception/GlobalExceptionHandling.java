@@ -10,8 +10,9 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandling {
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<Map<String, String>> handleDealershipNotFound(ResourceNotFoundException ex){
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("Message",ex.getMessage()));
     }
+
 }

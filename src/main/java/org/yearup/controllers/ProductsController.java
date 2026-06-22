@@ -32,16 +32,12 @@ public class ProductsController
         return productService.search(categoryId, minPrice, maxPrice, subCategory);
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public Product getById(@PathVariable int id)
+    public ResponseEntity<Product> getById(@PathVariable int id)
     {
         Product product = productService.getById(id);
-
-        if (product == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
-        return product;
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping()
@@ -56,9 +52,6 @@ public class ProductsController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Product updateProduct(@PathVariable int id, @RequestBody Product product)
     {
-        if (productService.getById(id) == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         return productService.update(id, product);
     }
 
@@ -66,9 +59,6 @@ public class ProductsController
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id)
     {
-        if (productService.getById(id) == null)
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }

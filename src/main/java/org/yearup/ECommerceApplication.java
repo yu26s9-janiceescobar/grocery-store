@@ -8,11 +8,7 @@ public class ECommerceApplication
 {
 
     public static void main(String[] args) {
-        String dbName = System.getenv("grocerystore");
-        if (dbName != null && !dbName.isBlank()) {
-            String bannerResource = "classpath:banner-" + dbName.toLowerCase() + ".txt";
-            System.setProperty("spring.banner.location", bannerResource);
-        }
+        System.setProperty("spring.banner.location", "classpath:banner-grocerystore.txt");
         SpringApplication.run(ECommerceApplication.class, args);
     }
 
