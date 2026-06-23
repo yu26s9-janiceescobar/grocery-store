@@ -11,7 +11,7 @@ import org.yearup.service.ProductService;
 import java.util.List;
 
 @RestController
-@RequestMapping("products")
+@RequestMapping("/products")
 @CrossOrigin
 public class ProductsController
 {
@@ -31,7 +31,7 @@ public class ProductsController
     {
         return productService.search(categoryId, minPrice, maxPrice, subCategory);
     }
-
+    
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     public ResponseEntity<Product> getById(@PathVariable int id)
@@ -40,7 +40,7 @@ public class ProductsController
         return ResponseEntity.ok(product);
     }
 
-    @PostMapping()
+    @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Product> addProduct(@RequestBody Product product)
     {
@@ -48,14 +48,14 @@ public class ProductsController
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Product updateProduct(@PathVariable int id, @RequestBody Product product)
     {
         return productService.update(id, product);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable int id)
     {

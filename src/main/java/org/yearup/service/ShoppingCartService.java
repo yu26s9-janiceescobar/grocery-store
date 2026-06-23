@@ -1,8 +1,14 @@
 package org.yearup.service;
 
 import org.springframework.stereotype.Service;
+import org.yearup.exception.ResourceNotFoundException;
+import org.yearup.models.CartItem;
+import org.yearup.models.Product;
 import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
 import org.yearup.repository.ShoppingCartRepository;
+
+import java.util.List;
 
 @Service
 public class ShoppingCartService
@@ -20,7 +26,17 @@ public class ShoppingCartService
     public ShoppingCart getByUserId(int userId)
     {
         // load the user's cart rows, look up each product, and build the ShoppingCart
-        return null;
+
+        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+        ShoppingCart shoppingCart = new ShoppingCart();
+
+        for (CartItem item: cartItems){
+            Product product = productService.getById(item.getProductId());
+            ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
+            shoppingCartItem.setProduct(product);
+            shoppingCart.add(shoppingCartItem);
+        }
+        return shoppingCart;
     }
 
     // add additional methods here

@@ -1,45 +1,48 @@
 package org.yearup.models;
 
+import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class ShoppingCart
-{
-    private Map<Integer, ShoppingCartItem> items = new HashMap<>();
+@Entity
+public class ShoppingCart {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+    private List<CartItem> cartItems;
+    public ShoppingCart(){}
 
-    public Map<Integer, ShoppingCartItem> getItems()
-    {
-        return items;
+    public ShoppingCart(Long id, User user){
+        this.id = id;
+        this.user = user;
+        cartItems = new ArrayList<>();
     }
 
-    public void setItems(Map<Integer, ShoppingCartItem> items)
-    {
-        this.items = items;
+    public Long getId(){
+        return id;
     }
 
-    public boolean contains(int productId)
-    {
-        return items.containsKey(productId);
+    public User getUser(){
+        return user;
     }
 
-    public void add(ShoppingCartItem item)
-    {
-        items.put(item.getProductId(), item);
+    public List<CartItem> getCartItems(){
+        return cartItems;
     }
 
-    public ShoppingCartItem get(int productId)
+    public void addCartItem(CartItem cartItem)
     {
-        return items.get(productId);
+        cartItems.add(cartItem);
     }
-
-    public double getTotal()
-    {
-        double total = items.values()
-                            .stream()
-                            .mapToDouble(i -> i.getLineTotal())
-                            .sum();
-
-        return total;
+    public void deleteCartItem(CartItem cartItem){
+        cartItems.remove(cartItem);
     }
 
 }
