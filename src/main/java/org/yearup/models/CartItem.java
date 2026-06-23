@@ -8,46 +8,42 @@ public class CartItem
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_item_id")
-    private int cartItemId;
+    private Long id;
 
-    @Column(name = "user_id")
-    private int userId;
+    @ManyToOne
+    @JoinColumn(name = "cart_item_id")
+    private ShoppingCart cart;
 
-    @Column(name = "product_id")
-    private int productId;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
 
-    @Column(name = "quantity")
     private int quantity = 1;
 
-    public int getCartItemId()
+    public CartItem(){}
+    public CartItem(ShoppingCart cart, Product product){
+        this.cart = cart;
+        this.product = product;
+    }
+    public Long getId()
     {
-        return cartItemId;
+        return id;
     }
 
-    public void setCartItemId(int cartItemId)
-    {
-        this.cartItemId = cartItemId;
+    public Product getProduct() {
+        return product;
     }
 
-    public int getUserId()
-    {
-        return userId;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public void setUserId(int userId)
-    {
-        this.userId = userId;
+    public ShoppingCart getCart(){
+        return cart;
     }
-
-    public int getProductId()
-    {
-        return productId;
-    }
-
-    public void setProductId(int productId)
-    {
-        this.productId = productId;
+    
+    public void setCart(ShoppingCart cart){
+        this.cart = cart;
     }
 
     public int getQuantity()
