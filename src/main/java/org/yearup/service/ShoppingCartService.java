@@ -1,5 +1,6 @@
 package org.yearup.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.*;
@@ -8,6 +9,7 @@ import org.yearup.repository.ProfileRepository;
 import org.yearup.repository.ShoppingCartRepository;
 import org.yearup.repository.UserRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,29 +29,28 @@ public class ShoppingCartService
 
     public ShoppingCart getCartByUserId(Long userId)
     {
-       return shoppingCartRepository.findByUserId(userId);
+       List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+       ShoppingCart shoppingCart = new ShoppingCart(userId);
+       shoppingCart.setCartItems(cartItems);
+       return shoppingCart;
     }
-    public ShoppingCart addProductToCart(Long userId, Long productId){
-        if (userRepository.existsById(userId)){
-            throw new ResourceNotFoundException("User Not Found: " + userId);
-        }
 
+    @Transactional
+    public ShoppingCart addProductToCart(Long userId, Long productId){
         Product product = productRepository.findById(productId)
                 .orElseThrow(()-> new ResourceNotFoundException("Product Not Found: " + productId));
 
-        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
-
-        Optional<CartItem> existing = shoppingCart.getCartItem(productId);
+        Optional<CartItem> existing = shoppingCartRepository.findByUserIdAndProduct_ProductId(userId, productId);
         existing.ifPresentOrElse(
                 item -> item.setQuantity(item.getQuantity() + 1),
-                () -> shoppingCart.addCartItem(new CartItem(shoppingCart, product))
-        );
-
-        return shoppingCart;
+                () -> shoppingCartRepository.save(new CartItem(userId, product))
+                );
+        return getCartByUserId(userId);
     }
-
-    public void deleteCart(Long userId){
+    @Transactional
+    public ShoppingCart clearCart(Long userId){
         shoppingCartRepository.deleteByUserId(userId);
+        return getCartByUserId(userId);
     }
 
     // add additional methods here

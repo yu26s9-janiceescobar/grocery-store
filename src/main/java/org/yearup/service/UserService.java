@@ -1,5 +1,6 @@
 package org.yearup.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.yearup.exception.ResourceNotFoundException;
@@ -53,12 +54,11 @@ public class UserService
         return userRepository.existsByUsername(username);
     }
 
+    @Transactional // prevents partial updates if either creating user or creating shopping cart fails.
     public User create(User user)
     {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        shoppingCartRepository.save(new ShoppingCart(user));
         return userRepository.save(user);
     }
 }
