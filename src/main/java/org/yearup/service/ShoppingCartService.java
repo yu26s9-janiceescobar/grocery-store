@@ -48,5 +48,9 @@ public class ShoppingCartService
         return shoppingCart;
     }
 
+    public void deleteCart(Long userId){
+        shoppingCartRepository.deleteByUserId(userId);
+    }
+
     // add additional methods here
 }

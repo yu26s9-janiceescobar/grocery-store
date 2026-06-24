@@ -1,5 +1,7 @@
 package org.yearup.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +16,18 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/cart")
 @CrossOrigin
+
 // only logged in users should have access to these actions
 public class ShoppingCartController
 {
     // a shopping cart controller depends on the service layer
     private ShoppingCartService shoppingCartService;
     private UserService userService;
-
+    @Autowired
+    public ShoppingCartController(ShoppingCartService shoppingCartService, UserService userService){
+        this.shoppingCartService = shoppingCartService;
+        this.userService = userService;
+    }
 
 
     // each method in this controller requires a Principal object as a parameter
@@ -42,9 +49,17 @@ public class ShoppingCartController
     public ResponseEntity<ShoppingCart> addProductToCart(@PathVariable Long productId, Principal principal){
         String userName = principal.getName();
         User user = userService.getByUserName(userName);
-        return ResponseEntity.ok(shoppingCartService.addProductToCart(user.getId(), productId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(shoppingCartService.addProductToCart(user.getId(), productId));
     }
-
+    
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public void deleteCart(Principal principal){
+        String username = principal.getName();
+        User user = userService.getByUserName(username);
+        shoppingCartService.deleteCart(user.getId());
+    }
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be added)
     // return the updated cart with status 201 Created

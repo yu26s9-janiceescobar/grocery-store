@@ -11,6 +11,7 @@ import java.util.Optional;
 public class ShoppingCart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cart_item_id")
     private Long id;
     @ManyToOne
     @JoinColumn(name = "user_id")
