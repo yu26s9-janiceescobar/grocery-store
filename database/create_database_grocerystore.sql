@@ -15,88 +15,88 @@ USE grocerystore;
 # ---------------------------------------------------------------------- #
 
 CREATE TABLE users (
-    user_id INT NOT NULL AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL,
-    hashed_password VARCHAR(255) NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    PRIMARY KEY (user_id)
+                       user_id BIGINT NOT NULL AUTO_INCREMENT,
+                       username VARCHAR(50) NOT NULL,
+                       hashed_password VARCHAR(255) NOT NULL,
+                       role VARCHAR(50) NOT NULL,
+                       PRIMARY KEY (user_id)
 );
 
 CREATE TABLE profiles (
-    user_id INT NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    last_name VARCHAR(50) NOT NULL,
-    phone VARCHAR(20) NOT NULL,
-    email VARCHAR(200) NOT NULL,
-    address VARCHAR(200) NOT NULL,
-    city VARCHAR(50) NOT NULL,
-    state VARCHAR(50) NOT NULL,
-    zip VARCHAR(20) NOT NULL,
-    PRIMARY KEY (user_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                          user_id BIGINT NOT NULL,
+                          first_name VARCHAR(50) NOT NULL,
+                          last_name VARCHAR(50) NOT NULL,
+                          phone VARCHAR(20) NOT NULL,
+                          email VARCHAR(200) NOT NULL,
+                          address VARCHAR(200) NOT NULL,
+                          city VARCHAR(50) NOT NULL,
+                          state VARCHAR(50) NOT NULL,
+                          zip VARCHAR(20) NOT NULL,
+                          PRIMARY KEY (user_id),
+                          FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE categories (
-    category_id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    description TEXT,
-    PRIMARY KEY (category_id)
+                            category_id BIGINT NOT NULL AUTO_INCREMENT,
+                            name VARCHAR(100) NOT NULL,
+                            description TEXT,
+                            PRIMARY KEY (category_id)
 );
 
 CREATE TABLE products (
-    product_id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(100) NOT NULL,
-    price DECIMAL(10, 2) NOT NULL,
-    category_id INT NOT NULL,
-    description TEXT,
-    subcategory VARCHAR(20),
-    image_url VARCHAR(200),
-    stock INT NOT NULL DEFAULT 0,
-    featured BOOL NOT NULL DEFAULT 0,
-    PRIMARY KEY (product_id),
-    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+                          product_id BIGINT NOT NULL AUTO_INCREMENT,
+                          name VARCHAR(100) NOT NULL,
+                          price DECIMAL(10, 2) NOT NULL,
+                          category_id BIGINT NOT NULL,
+                          description TEXT,
+                          subcategory VARCHAR(20),
+                          image_url VARCHAR(200),
+                          stock INT NOT NULL DEFAULT 0,
+                          featured BOOL NOT NULL DEFAULT 0,
+                          PRIMARY KEY (product_id),
+                          FOREIGN KEY (category_id) REFERENCES categories(category_id)
 );
 
 CREATE TABLE orders (
-    order_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    date DATETIME NOT NULL,
-    address VARCHAR(100) NOT NULL,
-    city VARCHAR(50) NOT NULL,
-    state VARCHAR(50) NOT NULL,
-    zip VARCHAR(20) NOT NULL,
-    shipping_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    PRIMARY KEY (order_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
+                        order_id BIGINT NOT NULL AUTO_INCREMENT,
+                        user_id BIGINT NOT NULL,
+                        date DATETIME NOT NULL,
+                        address VARCHAR(100) NOT NULL,
+                        city VARCHAR(50) NOT NULL,
+                        state VARCHAR(50) NOT NULL,
+                        zip VARCHAR(20) NOT NULL,
+                        shipping_amount DECIMAL(10, 2) NOT NULL DEFAULT 0,
+                        PRIMARY KEY (order_id),
+                        FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
 CREATE TABLE order_line_items (
-    order_line_item_id INT NOT NULL AUTO_INCREMENT,
-    order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    sales_price DECIMAL(10, 2) NOT NULL,
-    quantity INT NOT NULL,
-    discount DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    PRIMARY KEY (order_line_item_id),
-    FOREIGN KEY (order_id) REFERENCES orders(order_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+                                  order_line_item_id BIGINT NOT NULL AUTO_INCREMENT,
+                                  order_id BIGINT NOT NULL,
+                                  product_id BIGINT NOT NULL,
+                                  sales_price DECIMAL(10, 2) NOT NULL,
+                                  quantity INT NOT NULL,
+                                  discount DECIMAL(10, 2) NOT NULL DEFAULT 0,
+                                  PRIMARY KEY (order_line_item_id),
+                                  FOREIGN KEY (order_id) REFERENCES orders(order_id),
+                                  FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 -- new tables
 CREATE TABLE shopping_cart (
-    cart_item_id INT NOT NULL AUTO_INCREMENT,
-    user_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL DEFAULT 1,
-    PRIMARY KEY (cart_item_id),
-    UNIQUE KEY uq_cart_user_product (user_id, product_id),
-    FOREIGN KEY (user_id) REFERENCES users(user_id),
-    FOREIGN KEY (product_id) REFERENCES products(product_id)
+                               cart_item_id BIGINT NOT NULL AUTO_INCREMENT,
+                               user_id BIGINT NOT NULL,
+                               product_id BIGINT NOT NULL,
+                               quantity INT NOT NULL DEFAULT 1,
+                               PRIMARY KEY (cart_item_id),
+                               UNIQUE KEY uq_cart_user_product (user_id, product_id),
+                               FOREIGN KEY (user_id) REFERENCES users(user_id),
+                               FOREIGN KEY (product_id) REFERENCES products(product_id)
 );
 
 
 /*  INSERT Users  */
-INSERT INTO users (username, hashed_password, role) 
+INSERT INTO users (username, hashed_password, role)
 VALUES  ('user','$2a$10$NkufUPF3V8dEPSZeo1fzHe9ScBu.LOay9S3N32M84yuUM2OJYEJ/.','ROLE_USER'),
         ('admin','$2a$10$lfQi9jSfhZZhfS6/Kyzv3u3418IgnWXWDQDk7IbcwlCFPgxg9Iud2','ROLE_ADMIN'),
         ('george','$2a$10$lfQi9jSfhZZhfS6/Kyzv3u3418IgnWXWDQDk7IbcwlCFPgxg9Iud2','ROLE_USER');
@@ -108,14 +108,14 @@ VALUES  (1, 'Joe', 'Joesephus', '800-555-1234', 'joejoesephus@email.com', '789 O
         (3, 'George', 'Jetson', '800-555-9876', 'george.jetson@email.com', '123 Birch Parkway','Dallas','TX','75051')     ;
 
 /* INSERT Categories */
-INSERT INTO categories (name, description) 
+INSERT INTO categories (name, description)
 VALUES  ('Fresh Produce', 'Fresh fruits, vegetables, and organic produce.'),
         ('Dairy & Eggs', 'Milk, cheese, yogurt, eggs, and dairy products.'),
         ('Pantry Staples', 'Canned goods, grains, spices, and cooking essentials.');
 
 /* INSERT Products */
 -- Fresh Produce
-INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory) 
+INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory)
 VALUES  ('Organic Bananas', 3.99, 1, 'Fresh organic bananas, perfect for snacking or smoothies.', 'bananas.jpg', 100, 1, 'Organic'),
         ('Gala Apples', 4.99, 1, 'Crisp and sweet Gala apples, great for lunch boxes.', 'gala-apples.jpg', 80, 1, 'Fresh'),
         ('Fresh Spinach', 2.99, 1, 'Organic baby spinach leaves, perfect for salads.', 'spinach.jpg', 60, 0, 'Organic'),
@@ -138,30 +138,30 @@ VALUES  ('Organic Bananas', 3.99, 1, 'Fresh organic bananas, perfect for snackin
         ('Nitro Cold Brew', 6.99, 1, 'Nitro brewed cold coffee', 'cold-brew.jpg', 55, 1, 'Local');
 
 -- Dairy & Eggs
-INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory) 
-VALUES 
-        ('Large Grade A Eggs', 3.99, 2, 'Fresh large eggs from free-range chickens.', 'large-eggs.jpg', 80, 0, 'Fresh'),
-        ('Sharp Cheddar Cheese', 5.99, 2, 'Aged sharp cheddar cheese, perfect for sandwiches.', 'cheddar-cheese.jpg', 40, 0, 'Fresh'),
-        ('Greek Yogurt Plain', 4.99, 2, 'Thick and creamy Greek yogurt, high in protein.', 'greek-yogurt.jpg', 60, 1, 'Low-Fat'),
-        ('Unsalted Butter', 4.79, 2, 'Premium unsalted butter for baking and cooking.', 'butter.jpg', 70, 0, 'Fresh'),
-        ('Mozzarella Cheese', 4.49, 2, 'Fresh mozzarella cheese, great for pizza and caprese.', 'mozzarella.jpg', 35, 1, 'Fresh'),
-        ('Heavy Cream', 3.99, 2, 'Rich heavy cream for cooking and whipping.', 'heavy-cream.jpg', 45, 0, 'Fresh'),
-        ('Cottage Cheese', 3.49, 2, 'Low-fat cottage cheese, high in protein.', 'cottage-cheese.jpg', 50, 0, 'Low-Fat'),
-        ('Parmesan Cheese', 8.99, 2, 'Aged Parmesan cheese, freshly grated.', 'parmesan-cheese.jpg', 25, 1, 'Fresh'),
-        ('Almond Milk', 3.99, 2, 'Unsweetened almond milk, dairy-free alternative.', 'almond-milk.jpg', 55, 1, 'Vegan'),
-        
-        ('Cream Cheese', 2.99, 2, 'Smooth cream cheese, perfect for bagels and baking.', 'cream-cheese.jpg', 65, 0, 'Fresh'),
-        ('Gruyere', 6.49, 2, 'Nutty Swiss cheese with classic holes.', 'gruyere.jpg', 30, 0, 'Imported'),
-        ('Crema', 2.79, 2, 'Tangy sour crema for topping and cooking.', 'sour-cream.jpg', 55, 0, 'Fresh'),
-        ('Oat Milk', 4.49, 2, 'Creamy oat milk, sustainable plant-based option.', 'oat-milk.jpg', 45, 1, 'Vegan'),
-        ('Goat Cheese', 7.99, 2, 'Creamy goat cheese with tangy flavor.', 'goat-cheese.jpg', 20, 0, 'Local'),
-        ('Ice Cream', 8.99, 2, 'Whole milk ice cream for hungry stomachs.', 'ice-cream.jpg', 40, 0, 'Frozen'),
-        ('Ricotta Cheese', 4.99, 2, 'Fresh ricotta cheese, perfect for lasagna and desserts.', 'ricotta-cheese.jpg', 35, 0, 'Fresh'),
-        ('Coconut Milk', 3.49, 2, 'Canned coconut milk for cooking and baking.', 'coconut-milk.jpg', 60, 0, 'Canned'),
-        ('Baklava', 5.99, 2, 'Flaky honey goodness', 'baklava.jpg', 35, 1, 'Local');
+INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory)
+VALUES
+    ('Large Grade A Eggs', 3.99, 2, 'Fresh large eggs from free-range chickens.', 'large-eggs.jpg', 80, 0, 'Fresh'),
+    ('Sharp Cheddar Cheese', 5.99, 2, 'Aged sharp cheddar cheese, perfect for sandwiches.', 'cheddar-cheese.jpg', 40, 0, 'Fresh'),
+    ('Greek Yogurt Plain', 4.99, 2, 'Thick and creamy Greek yogurt, high in protein.', 'greek-yogurt.jpg', 60, 1, 'Low-Fat'),
+    ('Unsalted Butter', 4.79, 2, 'Premium unsalted butter for baking and cooking.', 'butter.jpg', 70, 0, 'Fresh'),
+    ('Mozzarella Cheese', 4.49, 2, 'Fresh mozzarella cheese, great for pizza and caprese.', 'mozzarella.jpg', 35, 1, 'Fresh'),
+    ('Heavy Cream', 3.99, 2, 'Rich heavy cream for cooking and whipping.', 'heavy-cream.jpg', 45, 0, 'Fresh'),
+    ('Cottage Cheese', 3.49, 2, 'Low-fat cottage cheese, high in protein.', 'cottage-cheese.jpg', 50, 0, 'Low-Fat'),
+    ('Parmesan Cheese', 8.99, 2, 'Aged Parmesan cheese, freshly grated.', 'parmesan-cheese.jpg', 25, 1, 'Fresh'),
+    ('Almond Milk', 3.99, 2, 'Unsweetened almond milk, dairy-free alternative.', 'almond-milk.jpg', 55, 1, 'Vegan'),
+
+    ('Cream Cheese', 2.99, 2, 'Smooth cream cheese, perfect for bagels and baking.', 'cream-cheese.jpg', 65, 0, 'Fresh'),
+    ('Gruyere', 6.49, 2, 'Nutty Swiss cheese with classic holes.', 'gruyere.jpg', 30, 0, 'Imported'),
+    ('Crema', 2.79, 2, 'Tangy sour crema for topping and cooking.', 'sour-cream.jpg', 55, 0, 'Fresh'),
+    ('Oat Milk', 4.49, 2, 'Creamy oat milk, sustainable plant-based option.', 'oat-milk.jpg', 45, 1, 'Vegan'),
+    ('Goat Cheese', 7.99, 2, 'Creamy goat cheese with tangy flavor.', 'goat-cheese.jpg', 20, 0, 'Local'),
+    ('Ice Cream', 8.99, 2, 'Whole milk ice cream for hungry stomachs.', 'ice-cream.jpg', 40, 0, 'Frozen'),
+    ('Ricotta Cheese', 4.99, 2, 'Fresh ricotta cheese, perfect for lasagna and desserts.', 'ricotta-cheese.jpg', 35, 0, 'Fresh'),
+    ('Coconut Milk', 3.49, 2, 'Canned coconut milk for cooking and baking.', 'coconut-milk.jpg', 60, 0, 'Canned'),
+    ('Baklava', 5.99, 2, 'Flaky honey goodness', 'baklava.jpg', 35, 1, 'Local');
 
 -- Pantry Staples
-INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory) 
+INSERT INTO products (name, price, category_id, description, image_url, stock, featured, subcategory)
 VALUES  ('Jasmine Rice 5lb', 6.99, 3, 'Fragrant jasmine rice, perfect for Asian dishes.', 'jasmine-rice.jpg', 40, 1, 'Whole Grain'),
         ('Extra Virgin Olive Oil', 12.99, 3, 'Premium cold-pressed extra virgin olive oil.', 'olive-oil.jpg', 30, 1, 'Organic'),
         ('Moutarde', 83.49, 3, 'Moutarde faite à la perfection', 'moutarde.jpg', 25, 0, 'Imported'),

@@ -1,31 +1,28 @@
 package org.yearup.models;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class ShoppingCart {
     private Long userId;
-    private List<CartItem> items;
+    private Map<Long, CartItem> items = new HashMap<>();
 
     public ShoppingCart(Long userId){
         this.userId = userId;
-        this.items = new ArrayList<>();
     }
 
     public Long getUserId(){
         return userId;
     }
-    public List<CartItem> getItems(){
-        return items;
-    }
-    public void setItems(List<CartItem> items){
-        this.items = items;
+    public Map<Long, CartItem> getItems() { return items; }
+    public void setItems(Map<Long, CartItem> items) { this.items = items; }
+    public void addItem(CartItem item) {
+        items.put(item.getProduct().getProductId(), item);
     }
     public BigDecimal getTotal()
     {
-        return items.stream().map(CartItem::getLineTotal)
+        return items.values().stream().map(CartItem::getLineTotal)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 

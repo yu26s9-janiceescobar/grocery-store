@@ -16,20 +16,21 @@ public class ShoppingCartService
 {
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
-    private final UserRepository userRepository;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, UserRepository userRepository)
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository)
     {
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
-        this.userRepository = userRepository;
     }
 
     public ShoppingCart getCartByUserId(Long userId)
     {
        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+
        ShoppingCart shoppingCart = new ShoppingCart(userId);
-       shoppingCart.setItems(cartItems);
+
+       cartItems.forEach(shoppingCart::addItem);
+
        return shoppingCart;
     }
 
@@ -40,7 +41,10 @@ public class ShoppingCartService
 
         Optional<CartItem> existing = shoppingCartRepository.findByUserIdAndProduct_ProductId(userId, productId);
         existing.ifPresentOrElse(
-                item -> item.setQuantity(item.getQuantity() + 1),
+                item -> {
+                    item.setQuantity(item.getQuantity() + 1);
+                shoppingCartRepository.save(item);
+                },
                 () -> shoppingCartRepository.save(new CartItem(userId, product))
                 );
         return getCartByUserId(userId);
