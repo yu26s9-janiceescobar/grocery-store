@@ -2,40 +2,49 @@ package org.yearup.service;
 
 import org.springframework.stereotype.Service;
 import org.yearup.exception.ResourceNotFoundException;
-import org.yearup.models.CartItem;
-import org.yearup.models.Product;
-import org.yearup.models.ShoppingCart;
-import org.yearup.models.ShoppingCartItem;
+import org.yearup.models.*;
+import org.yearup.repository.ProductRepository;
+import org.yearup.repository.ProfileRepository;
 import org.yearup.repository.ShoppingCartRepository;
+import org.yearup.repository.UserRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ShoppingCartService
 {
-    // a shopping cart is built from cart rows plus a product lookup for each row
     private final ShoppingCartRepository shoppingCartRepository;
-    private final ProductService productService;
+    private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductService productService)
+    public ShoppingCartService(ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, UserRepository userRepository)
     {
         this.shoppingCartRepository = shoppingCartRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
-    public ShoppingCart getByUserId(int userId)
+    public ShoppingCart getCartByUserId(Long userId)
     {
-        // load the user's cart rows, look up each product, and build the ShoppingCart
-
-        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
-        ShoppingCart shoppingCart = new ShoppingCart();
-
-        for (CartItem item: cartItems){
-            Product product = productService.getById(item.getProductId());
-            ShoppingCartItem shoppingCartItem = new ShoppingCartItem();
-            shoppingCartItem.setProduct(product);
-            shoppingCart.add(shoppingCartItem);
+       return shoppingCartRepository.findByUserId(userId);
+    }
+    public ShoppingCart addProductToCart(Long userId, Long productId){
+        if (userRepository.existsById(userId)){
+            throw new ResourceNotFoundException("User Not Found: " + userId);
         }
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(()-> new ResourceNotFoundException("Product Not Found: " + productId));
+
+        ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId);
+
+        Optional<CartItem> existing = shoppingCart.getCartItem(productId);
+        existing.ifPresentOrElse(
+                item -> item.setQuantity(item.getQuantity() + 1),
+                () -> shoppingCart.addCartItem(new CartItem(shoppingCart, product))
+        );
+
         return shoppingCart;
     }
 

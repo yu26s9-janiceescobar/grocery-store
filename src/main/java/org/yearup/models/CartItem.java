@@ -41,7 +41,7 @@ public class CartItem
     public ShoppingCart getCart(){
         return cart;
     }
-    
+
     public void setCart(ShoppingCart cart){
         this.cart = cart;
     }

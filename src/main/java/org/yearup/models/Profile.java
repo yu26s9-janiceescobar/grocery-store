@@ -8,7 +8,7 @@ public class Profile
 {
     @Id
     @Column(name = "user_id")
-    private int userId;
+    private Long userId;
 
     @Column(name = "first_name")
     private String firstName = "";
@@ -38,7 +38,7 @@ public class Profile
     {
     }
 
-    public Profile(int userId, String firstName, String lastName, String phone, String email, String address, String city, String state, String zip)
+    public Profile(Long userId, String firstName, String lastName, String phone, String email, String address, String city, String state, String zip)
     {
         this.userId = userId;
         this.firstName = firstName;
@@ -51,12 +51,12 @@ public class Profile
         this.zip = zip;
     }
 
-    public int getUserId()
+    public Long getUserId()
     {
         return userId;
     }
 
-    public void setUserId(int userId)
+    public void setUserId(Long userId)
     {
         this.userId = userId;
     }

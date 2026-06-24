@@ -24,17 +24,17 @@ public class ProductsController
 
     @GetMapping("")
     @PreAuthorize("permitAll()")
-    public List<Product> search(@RequestParam(name="cat", required = false) Integer categoryId,
+    public List<Product> search(@RequestParam(name="cat", required = false) Long categoryId,
                                 @RequestParam(name="minPrice", required = false) Double minPrice,
                                 @RequestParam(name="maxPrice", required = false) Double maxPrice,
                                 @RequestParam(name="subCategory", required = false) String subCategory)
     {
         return productService.search(categoryId, minPrice, maxPrice, subCategory);
     }
-    
+
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Product> getById(@PathVariable int id)
+    public ResponseEntity<Product> getById(@PathVariable Long id)
     {
         Product product = productService.getById(id);
         return ResponseEntity.ok(product);
@@ -50,14 +50,14 @@ public class ProductsController
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public Product updateProduct(@PathVariable int id, @RequestBody Product product)
+    public Product updateProduct(@PathVariable Long id, @RequestBody Product product)
     {
         return productService.update(id, product);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable int id)
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id)
     {
         productService.delete(id);
         return ResponseEntity.noContent().build();

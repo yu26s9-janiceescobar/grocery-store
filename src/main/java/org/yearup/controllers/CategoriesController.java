@@ -39,7 +39,7 @@ public class CategoriesController
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Category> getById(@PathVariable int id)
+    public ResponseEntity<Category> getById(@PathVariable Long id)
     {
         Category found = categoryService.getById(id);
         return ResponseEntity.ok(found);
@@ -49,7 +49,7 @@ public class CategoriesController
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable int categoryId)
+    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Long categoryId)
     {
         return ResponseEntity.ok(productService.listProductsByCategoryId(categoryId));
     }
@@ -68,7 +68,7 @@ public class CategoriesController
     // add annotation to ensure that only an ADMIN can call this function
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Category> updateCategory(@PathVariable int id, @RequestBody Category category)
+    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category)
     {
         Category updated = categoryService.update(id, category);
         return ResponseEntity.ok(updated);
@@ -79,7 +79,7 @@ public class CategoriesController
     // add annotation to ensure that only an ADMIN can call this function
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteCategory(@PathVariable int id)
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long id)
     {
         categoryService.delete(id);
         return ResponseEntity.noContent().build();

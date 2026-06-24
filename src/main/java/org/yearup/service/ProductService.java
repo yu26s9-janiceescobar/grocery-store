@@ -22,8 +22,8 @@ public class ProductService
     public List<Product> getAllProducts(){
         return productRepository.findAll();
     }
-    
-    public List<Product> search(Integer categoryId, Double minPrice, Double maxPrice, String subCategory)
+
+    public List<Product> search(Long categoryId, Double minPrice, Double maxPrice, String subCategory)
     {
         List<Product> products = categoryId != null
                 ? productRepository.findByCategoryId(categoryId)
@@ -36,12 +36,12 @@ public class ProductService
                        .toList();
     }
 
-    public List<Product> listProductsByCategoryId(int categoryId)
+    public List<Product> listProductsByCategoryId(Long categoryId)
     {
         return productRepository.findByCategoryId(categoryId); // add error if category id doesnt exist.
     }
 
-    public Product getById(int productId)
+    public Product getById(Long productId)
     {
         return productRepository.findById(productId).orElseThrow(()-> new ResourceNotFoundException("Product Not Found: " + productId));
     }
@@ -51,7 +51,7 @@ public class ProductService
         return productRepository.save(product);
     }
 
-    public Product update(int productId, Product product)
+    public Product update(Long productId, Product product)
     {
         return productRepository.findById(productId).map(existing -> {
             existing.setName(product.getName());
@@ -65,7 +65,7 @@ public class ProductService
         }).orElseThrow(()-> new ResourceNotFoundException("Product Not Found: " + productId));
     }
 
-    public void delete(int productId)
+    public void delete(Long productId)
     {
         if (!productRepository.existsById(productId)){
             throw new ResourceNotFoundException("Product Not Found: " + productId);

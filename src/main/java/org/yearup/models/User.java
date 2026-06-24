@@ -15,7 +15,7 @@ public class User {
    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
    @Column(name = "user_id")
-   private int id;
+   private Long id;
 
    @Column(name = "username")
    private String username;
@@ -51,21 +51,17 @@ public class User {
       this.activated = true;
    }
 
-   public User(int id, String username, String password, String authorities) {
-      this.id = id;
+   public User(String username, String password, String authorities) {
       this.username = username;
       this.password = password;
       if(authorities != null) this.setAuthorities(authorities);
       this.activated = true;
    }
 
-   public int getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(int id) {
-      this.id = id;
-   }
 
    public String getUsername() {
       return username;
@@ -118,7 +114,7 @@ public class User {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
       User user = (User) o;
-      return id == user.id &&
+      return id.equals(user.id) &&
               activated == user.activated &&
               Objects.equals(username, user.username) &&
               Objects.equals(password, user.password) &&

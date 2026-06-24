@@ -39,9 +39,9 @@ public class ShoppingCartItem
     }
 
     @JsonIgnore
-    public int getProductId()
+    public Long getProductId()
     {
-        return this.product.getProductId();
+        return product.getProductId();
     }
 
     public double getLineTotal()

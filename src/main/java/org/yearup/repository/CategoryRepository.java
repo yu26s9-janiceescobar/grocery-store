@@ -8,6 +8,6 @@ import org.yearup.models.Product;
 import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, Integer>
+public interface CategoryRepository extends JpaRepository<Category, Long>
 {
 }

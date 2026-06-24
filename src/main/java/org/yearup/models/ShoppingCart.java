@@ -1,11 +1,11 @@
 package org.yearup.models;
 
 import jakarta.persistence.*;
+import org.yearup.exception.ResourceNotFoundException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Entity
 public class ShoppingCart {
@@ -19,8 +19,7 @@ public class ShoppingCart {
     private List<CartItem> cartItems;
     public ShoppingCart(){}
 
-    public ShoppingCart(Long id, User user){
-        this.id = id;
+    public ShoppingCart(User user){
         this.user = user;
         cartItems = new ArrayList<>();
     }
@@ -35,6 +34,16 @@ public class ShoppingCart {
 
     public List<CartItem> getCartItems(){
         return cartItems;
+    }
+    public void setCartItems(List<CartItem> cartItems){
+        this.cartItems = cartItems;
+    }
+    public boolean containsProduct(Long productId){
+        return cartItems.stream().anyMatch(item -> item.getId().equals(productId));
+    }
+    public Optional<CartItem> getCartItem(Long productId){
+        return cartItems.stream()
+                .filter(item -> item.getProduct().getProductId().equals(productId)).findFirst();
     }
 
     public void addCartItem(CartItem cartItem)

@@ -25,17 +25,16 @@ public class CategoryService
 
     }
 
-    public Category getById(int categoryId)
+    public Category getById(Long categoryId)
     {
         return categoryRepository.findById(categoryId)
                 .orElseThrow(()-> new ResourceNotFoundException("Category not Found: " + categoryId));
     }
-    public Category create(Category category)
-    {
+    public Category create(Category category) {
         return categoryRepository.save(category);
     }
 
-    public Category update(int categoryId, Category category)
+    public Category update(Long categoryId, Category category)
     {
       return categoryRepository.findById(categoryId).map(existing -> {
               existing.setDescription(category.getDescription());
@@ -45,7 +44,7 @@ public class CategoryService
 
     }
 
-    public void delete(int categoryId)
+    public void delete(Long categoryId)
     {
         if (!categoryRepository.existsById(categoryId)) {
             throw new ResourceNotFoundException("Category Not Found: " + categoryId);
