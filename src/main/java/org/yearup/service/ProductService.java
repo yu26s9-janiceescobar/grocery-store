@@ -6,6 +6,7 @@ import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.Product;
 import org.yearup.repository.ProductRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -23,15 +24,15 @@ public class ProductService
         return productRepository.findAll();
     }
 
-    public List<Product> search(Long categoryId, Double minPrice, Double maxPrice, String subCategory)
+    public List<Product> search(Long categoryId, BigDecimal minPrice, BigDecimal maxPrice, String subCategory)
     {
         List<Product> products = categoryId != null
                 ? productRepository.findByCategoryId(categoryId)
                 : productRepository.findAll();
-
+        //p.getPrice() >= minPrice
         return products.stream()
-                       .filter(p -> minPrice == null || p.getPrice() >= minPrice)
-                       .filter(p -> maxPrice == null || p.getPrice() <= maxPrice)
+                       .filter(p -> minPrice == null || p.getPrice().compareTo(minPrice) >= 0)
+                       .filter(p -> maxPrice == null || p.getPrice().compareTo(maxPrice) <= 0)
                        .filter(p -> subCategory == null || subCategory.equalsIgnoreCase(p.getSubCategory()))
                        .toList();
     }

@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.Product;
 import org.yearup.service.ProductService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -25,8 +26,8 @@ public class ProductsController
     @GetMapping("")
     @PreAuthorize("permitAll()")
     public List<Product> search(@RequestParam(name="cat", required = false) Long categoryId,
-                                @RequestParam(name="minPrice", required = false) Double minPrice,
-                                @RequestParam(name="maxPrice", required = false) Double maxPrice,
+                                @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
+                                @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
                                 @RequestParam(name="subCategory", required = false) String subCategory)
     {
         return productService.search(categoryId, minPrice, maxPrice, subCategory);

@@ -7,30 +7,29 @@ import java.util.List;
 
 public class ShoppingCart {
     private Long userId;
-    private List<CartItem> cartItems;
+    private List<CartItem> items;
 
     public ShoppingCart(Long userId){
         this.userId = userId;
-        this.cartItems = new ArrayList<>();
+        this.items = new ArrayList<>();
     }
 
     public Long getUserId(){
         return userId;
     }
-    public List<CartItem> getCartItems(){
-        return cartItems;
+    public List<CartItem> getItems(){
+        return items;
     }
-    public void setCartItems(List<CartItem> cartItems){
-        this.cartItems = cartItems;
+    public void setItems(List<CartItem> items){
+        this.items = items;
     }
-   
-//    public boolean containsProduct(Long productId){
-//        return cartItems.stream().anyMatch(item -> item.getProduct().getProductId().equals(productId));
-//    }
-//    public Optional<CartItem> getCartItem(Long productId){
-//        return cartItems.stream()
-//                .filter(item -> item.getProduct().getProductId().equals(productId)).findFirst();
-//    }
+    public BigDecimal getTotal()
+    {
+        return items.stream().map(CartItem::getLineTotal)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+
 
 
 

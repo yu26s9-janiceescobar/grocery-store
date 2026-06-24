@@ -2,6 +2,8 @@ package org.yearup.models;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "shopping_cart")
 public class CartItem
@@ -50,5 +52,9 @@ public class CartItem
     public void setQuantity(int quantity)
     {
         this.quantity = quantity;
+    }
+
+    public BigDecimal getLineTotal(){
+        return product.getPrice().multiply(BigDecimal.valueOf(quantity));
     }
 }
