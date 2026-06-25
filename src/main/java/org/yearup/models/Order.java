@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -11,13 +13,13 @@ public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
-    private Long id;
+    private Long orderId;
 
     @Column(name = "user_id")
     private Long userId;
 
     @Column(name = "date")
-    private LocalDateTime dateTime;
+    private LocalDateTime date;
     private String address;
     private String city;
     private String state;
@@ -25,38 +27,31 @@ public class Order {
     private BigDecimal shippingAmount;
 
     public Order(){}
-    public Order(Long userId, LocalDateTime dateTime, String address, String city, String state, String zip, BigDecimal shippingAmount){
+    public Order(Long userId, LocalDateTime date, String address, String city, String state, String zip, BigDecimal shippingAmount){
         this.userId = userId;
-        this.dateTime = dateTime;
+        this.date = date;
         this.address = address;
         this.city = city;
         this.state = state;
         this.zip = zip;
         this.shippingAmount = shippingAmount;
+
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Long getOrderId() {
+        return orderId;
     }
 
     public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public String getAddress() {

@@ -14,7 +14,7 @@ public class ProductService
 {
     private final ProductRepository productRepository;
 
-    @Autowired
+
     public ProductService(ProductRepository productRepository)
     {
         this.productRepository = productRepository;
@@ -29,7 +29,7 @@ public class ProductService
         List<Product> products = categoryId != null
                 ? productRepository.findByCategoryId(categoryId)
                 : productRepository.findAll();
-        //p.getPrice() >= minPrice
+
         return products.stream()
                        .filter(p -> minPrice == null || p.getPrice().compareTo(minPrice) >= 0)
                        .filter(p -> maxPrice == null || p.getPrice().compareTo(maxPrice) <= 0)
