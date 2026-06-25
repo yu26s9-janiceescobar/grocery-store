@@ -1,7 +1,6 @@
 package org.yearup.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Category;
@@ -14,13 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 @CrossOrigin
-// add the annotation to make this controller the endpoint for the following url
-    // http://localhost:8080/categories
-// add annotation to allow cross site origin requests
+
 public class CategoriesController
 {
-    private CategoryService categoryService;
-    private ProductService productService;
+    private final CategoryService categoryService;
+    private final ProductService productService;
 
 
     public CategoriesController(CategoryService categoryService, ProductService productService){
@@ -28,59 +25,56 @@ public class CategoriesController
         this.productService = productService;
     }
 
-    // add the appropriate annotation for a get action
     @GetMapping
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<Category>> getAll()
+    @ResponseStatus(HttpStatus.OK)
+    public List<Category> getAll()
     {
-        return ResponseEntity.ok(categoryService.getAllCategories());
+        return categoryService.getAllCategories();
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Category> getById(@PathVariable Long id)
+    @ResponseStatus(HttpStatus.OK)
+    public Category getById(@PathVariable Long id)
     {
-        Category found = categoryService.getById(id);
-        return ResponseEntity.ok(found);
+         return categoryService.getById(id);
     }
 
-    // the url to return all products in category 1 would look like this
-    // https://localhost:8080/categories/1/products
-    @GetMapping("{categoryId}/products")
+
+    @GetMapping("/{categoryId}/products")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<List<Product>> getProductsByCategoryId(@PathVariable Long categoryId)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Product> getProductsByCategoryId(@PathVariable Long categoryId)
     {
-        return ResponseEntity.ok(productService.listProductsByCategoryId(categoryId));
+        return productService.listProductsByCategoryId(categoryId);
     }
 
-    // add annotation to call this method for a POST action
-    // add annotation to ensure that only an ADMIN can call this function
-    @PostMapping("")
+
+    @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Category> addCategory(@RequestBody Category category)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Category addCategory(@RequestBody Category category)
     {
-        Category created = categoryService.create(category);
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return categoryService.create(category);
     }
 
-    // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
+
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody Category category)
+    @ResponseStatus(HttpStatus.OK)
+    public Category updateCategory(@PathVariable Long id, @RequestBody Category category)
     {
-        Category updated = categoryService.update(id, category);
-        return ResponseEntity.ok(updated);
+        return categoryService.update(id, category);
     }
 
 
-    // add annotation to call this method for a DELETE action - the url path must include the categoryId
-    // add annotation to ensure that only an ADMIN can call this function
+
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteCategory(@PathVariable Long id)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteCategory(@PathVariable Long id)
     {
         categoryService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,6 @@
 package org.yearup.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Service;
 import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.Product;
@@ -39,7 +39,7 @@ public class ProductService
 
     public List<Product> listProductsByCategoryId(Long categoryId)
     {
-        return productRepository.findByCategoryId(categoryId); // add error if category id doesnt exist.
+        return productRepository.findByCategoryId(categoryId);
     }
 
     public Product getById(Long productId)

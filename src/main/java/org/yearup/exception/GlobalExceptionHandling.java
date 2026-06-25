@@ -14,13 +14,13 @@ public class GlobalExceptionHandling {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(Map.of("Message",ex.getMessage()));
     }
-    @ExceptionHandler(UserAlreadyExistException.class)
-    public ResponseEntity<Map<String, String>> handleUserAlreadyExistException(UserAlreadyExistException ex){
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<Map<String, String>> handleUserAlreadyExistException(UserAlreadyExistsException ex){
         return ResponseEntity.status(HttpStatus.CONFLICT)
                 .body(Map.of("Message", ex.getMessage()));
     }
     @ExceptionHandler(InvalidStateException.class)
-    public ResponseEntity<Map<String, String>> handleIncompleteProfileException(InvalidStateException ex){
+    public ResponseEntity<Map<String, String>> handleInvalidStateException(InvalidStateException ex){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(Map.of("Message", ex.getMessage()));
     }

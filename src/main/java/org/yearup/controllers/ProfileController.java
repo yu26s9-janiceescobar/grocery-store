@@ -15,8 +15,8 @@ import java.security.Principal;
 @CrossOrigin
 @PreAuthorize("hasRole('ROLE_USER')")
 public class ProfileController {
-    private ProfileService profileService;
-    private UserService userService;
+    private final ProfileService profileService;
+    private final UserService userService;
 
     public ProfileController(ProfileService profileService, UserService userService){
         this.profileService = profileService;
@@ -26,15 +26,13 @@ public class ProfileController {
     @ResponseStatus(HttpStatus.OK)
     public Profile getProfile(Principal principal){
         String username = principal.getName();
-        User user = userService.getByUserName(username);
-        return profileService.getProfile(user.getId());
+        return profileService.getProfile(userService.getIdByUsername(username));
     }
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public Profile updateProfile(@RequestBody Profile profile, Principal principal){
         String username = principal.getName();
-        User user = userService.getByUserName(username);
-        return profileService.updateProfile(profile, user.getId());
+        return profileService.updateProfile(profile, userService.getIdByUsername(username));
     }
 
 }

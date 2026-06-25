@@ -1,5 +1,6 @@
 package org.yearup.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.Profile;
@@ -22,6 +23,7 @@ public class ProfileService
     public Profile getProfile(Long userId){
         return profileRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("Profile Not Found: " + userId));
     }
+    @Transactional
     public Profile updateProfile(Profile profile, Long userId){
         return profileRepository.findById(userId).map(existing -> {
             existing.setAddress(profile.getAddress());

@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import org.yearup.exception.UserAlreadyExistsException;
 import org.yearup.models.Profile;
 import org.yearup.service.ProfileService;
 import org.yearup.service.UserService;
@@ -32,8 +33,8 @@ public class AuthenticationController {
 
     private final TokenProvider tokenProvider;
     private final AuthenticationManager authenticationManager;
-    private UserService userService;
-    private ProfileService profileService;
+    private final UserService userService;
+    private final ProfileService profileService;
 
     public AuthenticationController(TokenProvider tokenProvider, AuthenticationManager authenticationManager, UserService userService, ProfileService profileService) {
         this.tokenProvider = tokenProvider;
@@ -42,7 +43,8 @@ public class AuthenticationController {
         this.profileService = profileService;
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
+
+    @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginDto loginDto) {
         try
         {
@@ -65,17 +67,17 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password.");
         }
     }
-    
+
     @Transactional
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    @PostMapping("/register")
     public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto newUser) {
 
         boolean exists = userService.exists(newUser.getUsername());
         if (exists)
         {
             // duplicate username -> 400 (not a 500)
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User Already Exists.");
+            throw new UserAlreadyExistsException("User Already Exists.");
         }
 
         // create user

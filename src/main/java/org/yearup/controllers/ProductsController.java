@@ -1,10 +1,9 @@
 package org.yearup.controllers;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.yearup.models.Product;
 import org.yearup.service.ProductService;
 
@@ -23,8 +22,9 @@ public class ProductsController
         this.productService = productService;
     }
 
-    @GetMapping("")
+    @GetMapping
     @PreAuthorize("permitAll()")
+    @ResponseStatus(HttpStatus.OK)
     public List<Product> search(@RequestParam(name="cat", required = false) Long categoryId,
                                 @RequestParam(name="minPrice", required = false) BigDecimal minPrice,
                                 @RequestParam(name="maxPrice", required = false) BigDecimal maxPrice,
@@ -35,22 +35,23 @@ public class ProductsController
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<Product> getById(@PathVariable Long id)
+    @ResponseStatus(HttpStatus.OK)
+    public Product getById(@PathVariable Long id)
     {
-        Product product = productService.getById(id);
-        return ResponseEntity.ok(product);
+        return productService.getById(id);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Product> addProduct(@RequestBody Product product)
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product addProduct(@RequestBody Product product)
     {
-        Product saved = productService.create(product);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        return productService.create(product);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.OK)
     public Product updateProduct(@PathVariable Long id, @RequestBody Product product)
     {
         return productService.update(id, product);
@@ -58,9 +59,9 @@ public class ProductsController
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> deleteProduct(@PathVariable Long id)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteProduct(@PathVariable Long id)
     {
         productService.delete(id);
-        return ResponseEntity.noContent().build();
     }
 }

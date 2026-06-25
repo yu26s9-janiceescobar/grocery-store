@@ -5,7 +5,7 @@ import java.util.Map;
 
 
 public class ShoppingCart {
-    private Long userId;
+    private final Long userId;
     private Map<Long, CartItem> items = new HashMap<>();
 
     public ShoppingCart(Long userId){

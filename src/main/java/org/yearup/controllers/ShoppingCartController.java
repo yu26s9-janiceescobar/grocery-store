@@ -15,13 +15,11 @@ import java.security.Principal;
 @RestController
 @RequestMapping("/cart")
 @CrossOrigin
-
-// only logged in users should have access to these actions
+@PreAuthorize("hasRole('ROLE_USER')")
 public class ShoppingCartController
 {
-    // a shopping cart controller depends on the service layer
-    private ShoppingCartService shoppingCartService;
-    private UserService userService;
+    private final ShoppingCartService shoppingCartService;
+    private final UserService userService;
 
     public ShoppingCartController(ShoppingCartService shoppingCartService, UserService userService){
         this.shoppingCartService = shoppingCartService;
@@ -29,62 +27,32 @@ public class ShoppingCartController
     }
 
 
-    // each method in this controller requires a Principal object as a parameter
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart getCart(Principal principal)
     {
-        // get the currently logged in username
-        String userName = principal.getName();
-        // find database user by username
-        User user = userService.getByUserName(userName);
-        Long userId = user.getId();
-
-        //use the shoppingCartService to get all items in the cart and return the cart
-        return shoppingCartService.getCartByUserId(userId);
+        String username = principal.getName();
+        return shoppingCartService.getCartByUserId(userService.getIdByUsername(username));
     }
     @PostMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart addProductToCart(@PathVariable Long productId, Principal principal){
-        String userName = principal.getName();
-        User user = userService.getByUserName(userName);
-        return shoppingCartService.addProductToCart(user.getId(), productId);
+        String username = principal.getName();
+        return shoppingCartService.addProductToCart(userService.getIdByUsername(username), productId);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart deleteCart(Principal principal){
         String username = principal.getName();
-        User user = userService.getByUserName(username);
-        return shoppingCartService.clearCart(user.getId());
+        return shoppingCartService.clearCart(userService.getIdByUsername(username));
     }
 
     @PutMapping("/products/{productId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart updateProductQuantity(@PathVariable Long productId, @RequestBody CartItem cartItem, Principal principal){
         String username = principal.getName();
-        User user = userService.getByUserName(username);
-        return shoppingCartService.updateProductQuantity(user.getId(), productId, cartItem.getQuantity());
+        return shoppingCartService.updateProductQuantity(userService.getIdByUsername(username), productId, cartItem.getQuantity());
     }
-    // add a POST method to add a product to the cart - the url should be
-    // https://localhost:8080/cart/products/15  (15 is the productId to be added)
-    // return the updated cart with status 201 Created
-//    @PostMapping("/products/{id}")
-//    public ResponseEntity<Product> addProduct(@PathVariable int id){
-//
-//    }
-
-
-    // add a PUT method to update an existing product in the cart - the url should be
-    // https://localhost:8080/cart/products/15  (15 is the productId to be updated)
-    // the BODY should be a ShoppingCartItem - quantity is the only value that will be updated; return the cart (200 OK)
-
-
-    // add a DELETE method to clear all products from the current users cart
-    // https://localhost:8080/cart  - return the (now empty) cart so the front end can refresh it (200 OK)
 
 }

@@ -15,12 +15,12 @@ import java.util.List;
 public class UserService
 {
     private final UserRepository userRepository;
-    private final ShoppingCartRepository shoppingCartRepository;
 
-    public UserService(UserRepository userRepository, ShoppingCartRepository shoppingCartRepository)
+
+    public UserService(UserRepository userRepository)
     {
         this.userRepository = userRepository;
-        this.shoppingCartRepository = shoppingCartRepository;
+
     }
 
     public List<User> getAll()
@@ -53,8 +53,7 @@ public class UserService
     {
         return userRepository.existsByUsername(username);
     }
-
-    @Transactional // prevents partial updates if either creating user or creating shopping cart fails.
+    
     public User create(User user)
     {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

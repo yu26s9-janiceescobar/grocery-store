@@ -16,14 +16,14 @@ import org.yearup.repository.ShoppingCartRepository;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class OrderService {
-    private OrderRepository orderRepository;
-    private OrderLineItemRepository orderLineItemRepository;
-    private ProfileRepository profileRepository;
-    private ShoppingCartRepository shoppingCartRepository;
+    private final OrderRepository orderRepository;
+    private final OrderLineItemRepository orderLineItemRepository;
+    private final ProfileRepository profileRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     public OrderService(OrderRepository orderRepository, OrderLineItemRepository orderLineItemRepository, ProfileRepository profileRepository, ShoppingCartRepository shoppingCartRepository){
         this.orderRepository = orderRepository;
@@ -31,15 +31,11 @@ public class OrderService {
         this.profileRepository = profileRepository;
         this.shoppingCartRepository = shoppingCartRepository;
     }
+
     @Transactional
     public Order createOrder(Long userId){
-        Optional<Profile> existing = profileRepository.findById(userId);
+        Profile profile = profileRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("Profile Not Found."));
 
-        if (existing.isEmpty()){
-            throw new ResourceNotFoundException("Profile Not Found");
-        }
-
-        Profile profile = existing.get();
         if (profile.getCity().isBlank()
                 || profile.getState().isBlank()
                 || profile.getAddress().isBlank()
@@ -50,8 +46,8 @@ public class OrderService {
             throw new InvalidStateException("Must Fill All Profile Fields");
         }
 
-        List<CartItem> cartItem = shoppingCartRepository.findByUserId(userId);
-        if (cartItem.isEmpty()){
+        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
+        if (cartItems.isEmpty()){
             throw new InvalidStateException("Shopping Cart is Empty.");
         }
 
@@ -64,7 +60,7 @@ public class OrderService {
                 BigDecimal.ZERO);
         orderRepository.save(order);
 
-        for (CartItem item: cartItem) {
+        for (CartItem item: cartItems) {
             orderLineItemRepository.save(new OrderLineItem(order.getOrderId(),
                     item.getProduct(),
                     item.getProduct().getPrice(),

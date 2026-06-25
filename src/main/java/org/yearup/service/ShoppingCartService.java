@@ -6,7 +6,6 @@ import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.*;
 import org.yearup.repository.ProductRepository;
 import org.yearup.repository.ShoppingCartRepository;
-import org.yearup.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +34,7 @@ public class ShoppingCartService
     }
     @Transactional
     public ShoppingCart updateProductQuantity(Long userId, Long productId, int quantity){
-
-        Optional<CartItem> existing = shoppingCartRepository.findByUserIdAndProduct_ProductId(userId, productId);
-
-        if (existing.isEmpty()){
-            throw new ResourceNotFoundException("Product Id Not Found In Cart: " + productId);
-        }
-
-        CartItem cartItem = existing.get();
+        CartItem cartItem = shoppingCartRepository.findByUserIdAndProduct_ProductId(userId, productId).orElseThrow(()-> new ResourceNotFoundException("Product Does Not Exist In Cart."));
         cartItem.setQuantity(quantity);
         shoppingCartRepository.save(cartItem);
         return  getCartByUserId(userId);
@@ -63,11 +55,11 @@ public class ShoppingCartService
                 );
         return getCartByUserId(userId);
     }
+
     @Transactional
     public ShoppingCart clearCart(Long userId){
         shoppingCartRepository.deleteByUserId(userId);
         return getCartByUserId(userId);
     }
 
-    // add additional methods here
 }
