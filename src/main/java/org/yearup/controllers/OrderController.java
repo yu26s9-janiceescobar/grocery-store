@@ -4,7 +4,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.yearup.models.Order;
-import org.yearup.models.User;
 import org.yearup.service.OrderService;
 import org.yearup.service.UserService;
 import java.security.Principal;
