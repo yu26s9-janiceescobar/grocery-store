@@ -29,5 +29,12 @@ public class ProfileController {
         User user = userService.getByUserName(username);
         return profileService.getProfile(user.getId());
     }
+    @PutMapping
+    @ResponseStatus(HttpStatus.OK)
+    public Profile updateProfile(@RequestBody Profile profile, Principal principal){
+        String username = principal.getName();
+        User user = userService.getByUserName(username);
+        return profileService.updateProfile(profile, user.getId());
+    }
 
 }
