@@ -1,5 +1,6 @@
 package org.yearup.controllers;
 
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpHeaders;
@@ -64,7 +65,8 @@ public class AuthenticationController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username or password.");
         }
     }
-
+    
+    @Transactional
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public ResponseEntity<User> register(@Valid @RequestBody RegisterUserDto newUser) {
@@ -86,5 +88,6 @@ public class AuthenticationController {
 
         return new ResponseEntity<>(user, HttpStatus.CREATED);
     }
+
 
 }

@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import org.yearup.models.CartItem;
 import org.yearup.models.ShoppingCart;
 import org.yearup.models.User;
 import org.yearup.service.ShoppingCartService;
@@ -23,7 +24,7 @@ public class ShoppingCartController
     // a shopping cart controller depends on the service layer
     private ShoppingCartService shoppingCartService;
     private UserService userService;
-    @Autowired
+
     public ShoppingCartController(ShoppingCartService shoppingCartService, UserService userService){
         this.shoppingCartService = shoppingCartService;
         this.userService = userService;
@@ -32,8 +33,9 @@ public class ShoppingCartController
 
     // each method in this controller requires a Principal object as a parameter
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ShoppingCart> getCart(Principal principal)
+    public ShoppingCart getCart(Principal principal)
     {
         // get the currently logged in username
         String userName = principal.getName();
@@ -42,14 +44,15 @@ public class ShoppingCartController
         Long userId = user.getId();
 
         //use the shoppingCartService to get all items in the cart and return the cart
-        return ResponseEntity.ok(shoppingCartService.getCartByUserId(userId));
+        return shoppingCartService.getCartByUserId(userId);
     }
     @PostMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.CREATED)
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<ShoppingCart> addProductToCart(@PathVariable Long productId, Principal principal){
+    public ShoppingCart addProductToCart(@PathVariable Long productId, Principal principal){
         String userName = principal.getName();
         User user = userService.getByUserName(userName);
-        return ResponseEntity.status(HttpStatus.CREATED).body(shoppingCartService.addProductToCart(user.getId(), productId));
+        return shoppingCartService.addProductToCart(user.getId(), productId);
     }
 
     @DeleteMapping
@@ -59,6 +62,15 @@ public class ShoppingCartController
         String username = principal.getName();
         User user = userService.getByUserName(username);
         return shoppingCartService.clearCart(user.getId());
+    }
+
+    @PutMapping("/products/{productId}")
+    @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ShoppingCart updateProductQuantity(@PathVariable Long productId, @RequestBody CartItem cartItem, Principal principal){
+        String username = principal.getName();
+        User user = userService.getByUserName(username);
+        return shoppingCartService.updateProductQuantity(user.getId(), productId, cartItem.getQuantity());
     }
     // add a POST method to add a product to the cart - the url should be
     // https://localhost:8080/cart/products/15  (15 is the productId to be added)

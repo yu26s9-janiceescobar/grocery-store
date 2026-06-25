@@ -33,7 +33,21 @@ public class ShoppingCartService
 
        return shoppingCart;
     }
+    @Transactional
+    public ShoppingCart updateProductQuantity(Long userId, Long productId, int quantity){
 
+        Optional<CartItem> existing = shoppingCartRepository.findByUserIdAndProduct_ProductId(userId, productId);
+
+        if (existing.isEmpty()){
+            throw new ResourceNotFoundException("Product Id Not Found In Cart: " + productId);
+        }
+
+        CartItem cartItem = existing.get();
+        cartItem.setQuantity(quantity);
+        shoppingCartRepository.save(cartItem);
+        return  getCartByUserId(userId);
+
+    }
     @Transactional
     public ShoppingCart addProductToCart(Long userId, Long productId){
         Product product = productRepository.findById(productId)

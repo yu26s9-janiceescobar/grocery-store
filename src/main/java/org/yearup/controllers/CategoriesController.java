@@ -23,7 +23,7 @@ public class CategoriesController
     private CategoryService categoryService;
     private ProductService productService;
 
-    @Autowired
+
     public CategoriesController(CategoryService categoryService, ProductService productService){
         this.categoryService = categoryService;
         this.productService = productService;
