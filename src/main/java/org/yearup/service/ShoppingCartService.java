@@ -6,7 +6,6 @@ import org.yearup.exception.ResourceNotFoundException;
 import org.yearup.models.*;
 import org.yearup.repository.ProductRepository;
 import org.yearup.repository.ShoppingCartRepository;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -25,9 +24,7 @@ public class ShoppingCartService
     public ShoppingCart getCartByUserId(Long userId)
     {
        List<CartItem> cartItems = shoppingCartRepository.findByUserId(userId);
-
        ShoppingCart shoppingCart = new ShoppingCart(userId);
-
        cartItems.forEach(shoppingCart::addItem);
 
        return shoppingCart;

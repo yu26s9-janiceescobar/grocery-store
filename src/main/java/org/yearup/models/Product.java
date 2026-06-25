@@ -1,6 +1,8 @@
 package org.yearup.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
+
 
 import java.math.BigDecimal;
 
@@ -13,8 +15,10 @@ public class Product
     @Column(name = "product_id")
     private Long productId;
 
+
     @Column(name = "name")
     private String name;
+
 
     @Column(name = "price")
     private BigDecimal price;
